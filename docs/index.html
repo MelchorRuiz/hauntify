@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --main-color: #A04747;
+      --secondary-color: #D8A25E;
+      --terciary-color: #EEDF7A;
+      --background-color: #343131;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--background-color);
+      color: white;
+    }
+    header {
+      text-align: center;
+      padding: 10px 0;
+
+      & h1 {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 2em;
+        color: var(--main-color);
+        text-transform: uppercase;
+      }
+    }
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 50px;
+
+      & button {
+        background-color: var(--main-color);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2em;
+        text-transform: uppercase;
+      }
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: var(--main-color);
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+    }
+  </style>
+  <script type="module">
+    const BASE_URL = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:3000' : 'https://produccion.com';
+    document.querySelector('button').addEventListener('click', () => {
+      alert(BASE_URL);
+    });
+  </script>
+  <title>Hauntify</title>
+</head>
+<body>
+  <header>
+    <h1>Crea tus propias historias de terror</h1>
+  </header>
+  <main>
+    <button>Elige tus imagenes</button>
+  </main>
+  <footer>
+    <p>Hauntify &copy; 2024</p>
+  </footer>
+</body>
+</html>
