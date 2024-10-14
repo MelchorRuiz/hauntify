@@ -55,15 +55,29 @@
       width: 100%;
       background-color: var(--main-color);
       color: white;
-      text-align: center;
       padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 20px;
+      padding-right: 20px;
     }
   </style>
   <script type="module">
-    const BASE_URL = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:3000' : 'https://produccion.com';
+    const BASE_URL = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : 'https://produccion.com';
+
     document.querySelector('button').addEventListener('click', () => {
       alert(BASE_URL);
     });
+
+    fetch(`${BASE_URL}/status`)
+      .then(response => response.json())
+      .then(data => {
+        document.querySelector('#status-server').textContent = data.status;
+      })
+      .catch(error => {
+        document.querySelector('#status-server').textContent = 'Error';
+      });
   </script>
   <title>Hauntify</title>
 </head>
@@ -76,6 +90,7 @@
   </main>
   <footer>
     <p>Hauntify &copy; 2024</p>
+    <p>Servidor: <span id="status-server"></span></p>
   </footer>
 </body>
 </html>
