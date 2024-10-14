@@ -13,16 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.12.3' 
-
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        pip install -r requirements.txt
-
     - name: Deploy to Server via SSH
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -38,12 +28,7 @@ jobs:
 
         rsync -avz --exclude '.git*' --exclude 'docs' --exclude '.gitignore' ./ $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
 
-        ssh $REMOTE_USER@$REMOTE_HOST << 'EOF'
-          cd $REMOTE_PATH && \
-          if [ ! -d "venv" ]; then \
-              python3 -m venv venv; \
-          fi && \
-          ./venv/bin/pip install -r requirements.txt && \
-          sudo systemctl restart hauntify_app.service && \
-          echo "🎉 Aplicación desplegada correctamente"
-        EOF
+        ssh $REMOTE_USER@$REMOTE_HOST "cd $REMOTE_PATH && if [ ! -d venv ]; then python3 -m venv venv; fi"
+        ssh $REMOTE_USER@$REMOTE_HOST "cd $REMOTE_PATH && ./venv/bin/pip install -r $REMOTE_PATH/requirements.txt"
+        ssh $REMOTE_USER@$REMOTE_HOST "sudo systemctl restart hauntify_app.service"
+        ssh $REMOTE_USER@$REMOTE_HOST "echo '🎉 Aplicación desplegada correctamente'"
