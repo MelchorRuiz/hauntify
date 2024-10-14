@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.12.3' 
 
@@ -39,16 +39,12 @@ jobs:
         rsync -avz --exclude '.git*' --exclude 'docs' --exclude '.gitignore' ./ $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
 
         ssh $REMOTE_USER@$REMOTE_HOST << 'EOF'
-          cd $REMOTE_PATH
-
-          if [ ! -d "venv" ]; then
-              python3 -m venv venv
-          fi
-          source venv/bin/activate
-
-          pip install -r requirements.txt
-
-          sudo systemctl restart hauntify_app.service
-
+          cd $REMOTE_PATH && \
+          if [ ! -d "venv" ]; then \
+              python3 -m venv venv; \
+          fi && \
+          source venv/bin/activate && \
+          pip install -r requirements.txt && \
+          sudo systemctl restart hauntify_app.service && \
           echo "🎉 Aplicación desplegada correctamente"
         EOF
