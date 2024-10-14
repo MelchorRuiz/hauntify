@@ -1,0 +1,54 @@
+name: 🎉 Deploy backend to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.3' 
+
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Deploy to Server via SSH
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_PATH: ${{ secrets.REMOTE_PATH }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+        ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts
+
+        rsync -avz --exclude '.git*' --exclude 'docs' --exclude '.gitignore' ./ $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
+
+        ssh $REMOTE_USER@$REMOTE_HOST << 'EOF'
+          cd $REMOTE_PATH
+
+          if [ ! -d "venv" ]; then
+              python3 -m venv venv
+          fi
+          source venv/bin/activate
+
+          pip install -r requirements.txt
+
+          sudo systemctl restart hauntify_app.service
+
+          echo "🎉 Aplicación desplegada correctamente"
+        EOF
