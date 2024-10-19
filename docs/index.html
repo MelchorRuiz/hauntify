@@ -64,7 +64,7 @@
     }
   </style>
   <script type="module">
-    const BASE_URL = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : 'http://142.93.120.192:8000';
+    const BASE_URL = window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : './api';
 
     document.querySelector('button').addEventListener('click', () => {
       alert(BASE_URL);
